@@ -9,9 +9,9 @@ import (
 )
 
 type Server struct {
-	Remotes      []*Remote
-	MessageQueue Queue
-	started      bool
+	Remotes []*Remote
+	//MessageQueue Queue
+	started bool
 }
 
 func (s *Server) Start() {
@@ -30,6 +30,7 @@ func (s *Server) listen() {
 		fmt.Printf("[%v]<!> ERROR listening on port\n", time.Now().Unix())
 		return
 	}
+	fmt.Printf("[%v]<-> Started nxCore\n", time.Now().Unix())
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
@@ -49,7 +50,8 @@ func (s *Server) handleConnection(connection net.Conn) {
 func (s *Server) Bridgecast(remote *Remote, message string) {
 	for _, pReceiver := range s.Remotes {
 		for _, sChannel := range remote.Channels {
-			if pReceiver != remote && bp.StringInSlice(pReceiver.Channels, sChannel) {
+			//if pReceiver != remote && bp.StringInSlice(pReceiver.Channels, sChannel) {
+			if bp.StringInSlice(pReceiver.Channels, sChannel) {
 				pReceiver.Send(message)
 				break
 			}
